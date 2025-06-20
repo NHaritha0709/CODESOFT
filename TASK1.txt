@@ -1,0 +1,110 @@
+import tkinter as tk
+from tkinter import ttk, messagebox
+
+# Sample data store
+employees = []
+
+# Functions
+def add_employee():
+    emp = {
+        "ID": id_var.get(),
+        "Name": name_var.get(),
+        "Dept": dept_var.get(),
+        "Desig": desig_var.get()
+    }
+
+    if any(val == "" for val in emp.values()):
+        messagebox.showwarning("Input Error", "All fields are required")
+        return
+
+    employees.append(emp)
+    show_employees()
+    clear_fields()
+
+def show_employees():
+    for row in tree.get_children():
+        tree.delete(row)
+    for emp in employees:
+        tree.insert('', tk.END, values=(emp["ID"], emp["Name"], emp["Dept"], emp["Desig"]))
+
+def clear_fields():
+    id_var.set("")
+    name_var.set("")
+    dept_var.set("")
+    desig_var.set("")
+
+def on_row_select(event):
+    selected = tree.selection()
+    if selected:
+        values = tree.item(selected[0])['values']
+        id_var.set(values[0])
+        name_var.set(values[1])
+        dept_var.set(values[2])
+        desig_var.set(values[3])
+
+def update_employee():
+    selected = tree.selection()
+    if selected:
+        index = tree.index(selected[0])
+        employees[index] = {
+            "ID": id_var.get(),
+            "Name": name_var.get(),
+            "Dept": dept_var.get(),
+            "Desig": desig_var.get()
+        }
+        show_employees()
+        clear_fields()
+    else:
+        messagebox.showerror("Error", "Please select a record to update.")
+
+def delete_employee():
+    selected = tree.selection()
+    if selected:
+        index = tree.index(selected[0])
+        employees.pop(index)
+        show_employees()
+        clear_fields()
+    else:
+        messagebox.showerror("Error", "Please select a record to delete.")
+
+# GUI setup
+root = tk.Tk()
+root.title("Employee Management System")
+root.geometry("700x500")
+
+# Variables
+id_var = tk.StringVar()
+name_var = tk.StringVar()
+dept_var = tk.StringVar()
+desig_var = tk.StringVar()
+
+# Form labels and entries
+tk.Label(root, text="Employee ID").grid(row=0, column=0, padx=10, pady=10)
+tk.Entry(root, textvariable=id_var).grid(row=0, column=1)
+
+tk.Label(root, text="Name").grid(row=1, column=0, padx=10)
+tk.Entry(root, textvariable=name_var).grid(row=1, column=1)
+
+tk.Label(root, text="Department").grid(row=2, column=0, padx=10)
+tk.Entry(root, textvariable=dept_var).grid(row=2, column=1)
+
+tk.Label(root, text="Designation").grid(row=3, column=0, padx=10)
+tk.Entry(root, textvariable=desig_var).grid(row=3, column=1)
+
+# Buttons
+tk.Button(root, text="Add", width=12, command=add_employee).grid(row=0, column=3, padx=10)
+tk.Button(root, text="Update", width=12, command=update_employee).grid(row=1, column=3)
+tk.Button(root, text="Delete", width=12, command=delete_employee).grid(row=2, column=3)
+tk.Button(root, text="Clear", width=12, command=clear_fields).grid(row=3, column=3)
+
+# Treeview (table)
+cols = ("ID", "Name", "Dept", "Desig")
+tree = ttk.Treeview(root, columns=cols, show="headings")
+for col in cols:
+    tree.heading(col, text=col)
+    tree.column(col, width=100)
+
+tree.grid(row=5, column=0, columnspan=4, padx=10, pady=20)
+tree.bind("<ButtonRelease-1>", on_row_select)
+
+root.mainloop()
