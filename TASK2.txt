@@ -1,1 +1,468 @@
-hello hi
+import tkinter as tk
+from tkinter import StringVar, Label, Button, messagebox
+import mysql.connector as mc
+
+class EmployeeManagementApp:
+    def _init_(self):
+        self.login_screen = tk.Tk()
+        self.login_screen.title("Login")
+        self.login_screen.geometry("800x600")
+        self.entry_vars = []
+        self.name_var = StringVar()
+        self.doj_var = StringVar()
+        self.designation_var = StringVar()
+        self.phone_var = StringVar()
+        self.gender_var = StringVar()
+        self.salary_var = StringVar()
+        self.email_var = StringVar() 
+        
+        self.times_new_roman = ("Times New Roman", 16)
+        login_button_img_path = r"C:\Users\harit\AppData\Local\Temp\Rar$DIa0.505\1.png"
+        login_button_img = tk.PhotoImage(file=login_button_img_path)
+       
+        modification_button_img_path = r"C:\Users\harit\AppData\Local\Temp\Rar$DIa0.478\modify.png"
+        self.modification_button_img = tk.PhotoImage(file=modification_button_img_path)
+        
+        employee_details_button_img_path = r"C:\Users\harit\AppData\Local\Temp\Rar$DIa0.154\details.png"
+        self.employee_details_button_img = tk.PhotoImage(file=employee_details_button_img_path)
+        
+        add_button_img_path = r"C:\Users\harit\AppData\Local\Temp\Rar$DIa0.783\add.png"
+        self.add_button_img = tk.PhotoImage(file=add_button_img_path)
+        
+        delete_button_img_path = r"C:\Users\harit\AppData\Local\Temp\Rar$DIa0.600\delete.png"
+        self.delete_button_img = tk.PhotoImage(file=delete_button_img_path)
+        
+        update_button_img_path = r"C:\Users\harit\AppData\Local\Temp\Rar$DIa0.636\update.png"
+        self.update_button_img = tk.PhotoImage(file=update_button_img_path)
+        
+        username_label_img_path = r"C:\Users\harit\AppData\Local\Temp\Rar$DIa0.213\2.png"
+        self.username_label_img = tk.PhotoImage(file=username_label_img_path)
+        
+        password_label_img_path = r"C:\Users\harit\AppData\Local\Temp\Rar$DIa0.773\3.png"
+        self.password_label_img = tk.PhotoImage(file=password_label_img_path)
+
+        ok_button_img_path = r"C:\Users\harit\Downloads\OK.png"
+        self.ok_button_img = tk.PhotoImage(file=ok_button_img_path)
+        
+        enter_employee_name_img_path = r"C:\Users\harit\Downloads\employee name.png"
+        self.enter_employee_name_img = tk.PhotoImage(file=enter_employee_name_img_path)
+
+        addemp_button_img_path=r"C:\Users\harit\AppData\Local\Temp\Rar$DIa0.563\4.png"
+        self.addemp_button_img=tk.PhotoImage(file=addemp_button_img_path)
+
+        name_label_img_path = r"C:\Users\harit\AppData\Local\Temp\Rar$DIa1.956\7.png"
+        self.name_label_img = tk.PhotoImage(file=name_label_img_path)
+        
+        DOJ_label_img_path = r"C:\Users\harit\AppData\Local\Temp\Rar$DIa1.572\8.png"
+        self.DOJ_label_img = tk.PhotoImage(file=DOJ_label_img_path)
+        
+        designation_label_img_path = r"C:\Users\harit\AppData\Local\Temp\Rar$DIa0.844\9.png"
+        self.designation_label_img = tk.PhotoImage(file=designation_label_img_path)
+        
+        phoneno_label_img_path = r"C:\Users\harit\AppData\Local\Temp\Rar$DIa1.359\10.png"
+        self.phoneno_label_img = tk.PhotoImage(file=phoneno_label_img_path)
+
+        gender_label_img_path = r"C:\Users\harit\AppData\Local\Temp\Rar$DIa0.714\13.png"
+        self.gender_label_img = tk.PhotoImage(file=gender_label_img_path)
+        
+        salary_label_img_path = r"C:\Users\harit\AppData\Local\Temp\Rar$DIa0.502\11.png"
+        self.salary_label_img = tk.PhotoImage(file=salary_label_img_path)
+        
+        email_label_img_path = r"C:\Users\harit\AppData\Local\Temp\Rar$DIa0.087\12.png"
+        self.email_label_img = tk.PhotoImage(file=email_label_img_path)
+
+        updatemp_button_img_path=r"C:\Users\harit\AppData\Local\Temp\Rar$DIa0.874\6.png"
+        self.updatemp_button_img=tk.PhotoImage(file=updatemp_button_img_path)
+
+        delemp_button_img_path=r"C:\Users\harit\AppData\Local\Temp\Rar$DIa0.769\5.png"
+        self.delemp_button_img=tk.PhotoImage(file=delemp_button_img_path)
+
+        
+        def set_font(widget):
+            widget.config(font=self.times_new_roman)
+
+        set_font(tk.Label(self.login_screen, text="Please enter the login details"))
+
+   
+        img_path = r"C:\Users\harit\Downloads\Employee Management System.png"
+        img = tk.PhotoImage(file=img_path)
+        img_label = tk.Label(self.login_screen, image=img)
+        img_label.pack()
+        img_label.image = img
+
+        self.username_var = StringVar()
+        self.username_login_entry = tk.Entry(self.login_screen, textvariable=self.username_var, font=self.times_new_roman)
+        self.username_login_entry.place(x=315, y=300)
+        username_label = tk.Label(self.login_screen, font=self.times_new_roman, compound=tk.LEFT, image=self.username_label_img, bd=0)
+        username_label.place(x=200, y=300)
+      
+        self.password_var = StringVar()
+        password_label = tk.Label(self.login_screen, font=self.times_new_roman,  compound=tk.LEFT, image=self.password_label_img, bd=0)
+        password_label.image = self.password_label_img
+        password_label.place(x=200, y=350)
+        self.password_login_entry = tk.Entry(self.login_screen, textvariable=self.password_var, show="*", font=self.times_new_roman)
+        self.password_login_entry.place(x=315, y=350)
+
+        login_button = tk.Button(self.login_screen,image=login_button_img,font=self.times_new_roman,compound=tk.LEFT, command=self.check_login,bg='black',bd=0)
+        login_button.image = login_button_img
+        login_button.place(x=300, y=400)
+
+        self.con = None
+       
+
+    def check_login(self):
+        username = self.username_var.get()
+        password = self.password_var.get()
+
+        if username == "admin" and password == "1234":
+            print("Correct username/password!")
+            self.employeepage()
+        elif username == "employee" and password == "5678":
+            print("Correct username/password!")
+            self.employeepage()
+        else:
+            print("Wrong username/password!")
+            
+
+    def employeepage(self):
+        self.login_screen.withdraw()
+        self.frontpage = tk.Toplevel(self.login_screen)
+        self.frontpage.title("Employee Management System")
+        self.frontpage.geometry("800x600")
+
+        image_path_employee = r"C:\Users\harit\AppData\Local\Temp\Rar$DIa0.428\employee page.png"
+        self.employee_image = tk.PhotoImage(file=image_path_employee)
+   
+   
+        image_label = tk.Label(self.frontpage, image=self.employee_image)
+        image_label.pack()
+        tk.Button(self.frontpage,font=self.times_new_roman, image=self.modification_button_img,bd=0,bg='black', compound=tk.LEFT,command=self.modification_page).place(x=250, y=300)
+        tk.Button(self.frontpage,font=self.times_new_roman,image=self.employee_details_button_img,bd=0,bg='black', compound=tk.LEFT,command=self.employee_details_page).place(x=250, y=150)
+
+    def fetch_employee_details(self, employee_name):
+        if self.con is None:
+            print("Database connection is not established.")
+            return None
+
+        query = "SELECT * FROM employee WHERE Name = %s"
+        cur = self.con.cursor()
+        cur.execute(query, (employee_name,))
+        return cur.fetchone()
+
+
+    def employee_details_page(self):
+        employee_name = self.get_employee_name_from_user()
+       
+        if not employee_name:
+            return
+
+        details = self.fetch_employee_details(employee_name)
+
+        if details:
+            self.display_employee_details(details)
+        else:
+            print("Employee not found.")
+
+    def get_employee_name_from_user(self):
+        input_dialog = tk.Toplevel(self.frontpage)
+        input_dialog.title("Employee Name")
+        input_dialog.geometry("800x600")
+
+    
+        image_path_get_employee_name = r"C:\Users\harit\AppData\Local\Temp\Rar$DIa0.583\get employee name from user.png"
+        get_employee_name_image = tk.PhotoImage(file=image_path_get_employee_name)
+
+        image_label = tk.Label(input_dialog, image=get_employee_name_image)
+        image_label.image = get_employee_name_image
+        image_label.place(x=0, y=0)
+
+        enter_emp_name_label = tk.Label(input_dialog, font=self.times_new_roman,  compound=tk.LEFT, image=self.enter_employee_name_img, bd=0)
+        enter_emp_name_label.image = self.enter_employee_name_img
+        enter_emp_name_label.place(x=250, y=225)
+
+        entry_var = StringVar()
+        entry = tk.Entry(input_dialog, textvariable=entry_var, font=self.times_new_roman)
+        entry.place(x=290, y=300)
+        
+        ok_button = tk.Button(input_dialog, image=self.ok_button_img, font=self.times_new_roman, command=input_dialog.destroy, bd=0,bg='black')
+        ok_button.image = self.ok_button_img
+        ok_button.place(x=375, y=350)
+
+        input_dialog.grab_set()
+        self.frontpage.wait_window(input_dialog)
+
+        return entry_var.get()
+    
+    def display_employee_details(self, details):
+
+        employee_details_window = tk.Toplevel(self.frontpage)
+        employee_details_window.title("Employee Details")
+        employee_details_window.geometry("800x600")
+
+   
+        image_path_employee_details = r"C:\Users\harit\AppData\Local\Temp\Rar$DIa0.372\details.png"
+        employee_details_image = tk.PhotoImage(file=image_path_employee_details)
+
+        image_label = tk.Label(employee_details_window, image=employee_details_image)
+        image_label.image = employee_details_image
+        image_label.pack()
+
+        label_texts = ["Name", "DOJ", "Designation", "Phone Number", "Gender", "Salary", "Email"]
+        row_position = 150
+
+        for label_text, detail in zip(label_texts, details):
+            Label(employee_details_window, text=f"{label_text}: {detail}", font=self.times_new_roman).place(x=300, y=row_position)
+            row_position += 50
+
+
+
+           
+    def modification_page(self):
+        modification_window = tk.Toplevel(self.frontpage)
+        modification_window.title("Modification")
+        modification_window.geometry("800x600")
+
+        image_path_modification_page = r"C:\Users\harit\AppData\Local\Temp\Rar$DIa0.788\modification page.png"
+        modification_image = tk.PhotoImage(file=image_path_modification_page)
+
+        image_label = tk.Label(modification_window, image=modification_image)
+        image_label.image = modification_image
+        image_label.pack()
+
+        tk.Button(modification_window, font=self.times_new_roman,
+              image=self.add_button_img, bd=0, compound=tk.LEFT, command=self.add_employee_window,bg='black').place(x=250, y=80)
+
+        tk.Button(modification_window, font=self.times_new_roman,
+              image=self.delete_button_img, bd=0, compound=tk.LEFT, command=self.delete_employee_window,bg='black').place(x=250, y=230)
+
+        tk.Button(modification_window, font=self.times_new_roman,
+              image=self.update_button_img, bd=0, compound=tk.LEFT, command=self.update_employee_window,bg='black').place(x=250, y=380)
+
+    def add_employee_window(self):
+       
+        add_employee_window = tk.Toplevel(self.frontpage)
+        add_employee_window.title("Add Employee")
+        add_employee_window.geometry("800x600")
+       
+        image_path_add_employee = r"C:\Users\harit\AppData\Local\Temp\Rar$DIa0.948\add employee.png"
+        add_employee_image = tk.PhotoImage(file=image_path_add_employee)
+
+        image_label = tk.Label(add_employee_window, image=add_employee_image)
+        image_label.image = add_employee_image  
+        image_label.pack()
+
+        tk.Label(add_employee_window, text="Add Employee",font=self.times_new_roman).pack()
+
+        tk.Label(add_employee_window, font=self.times_new_roman, compound=tk.LEFT, image=self.name_label_img, bd=0).place(x=250,y=150)
+        self.name_var = StringVar()
+        name_entry = tk.Entry(add_employee_window, textvariable=self.name_var, font=self.times_new_roman)
+        name_entry.place(x=400,y=150)
+
+        tk.Label(add_employee_window, font=self.times_new_roman ,compound=tk.LEFT, image=self.DOJ_label_img, bd=0).place(x=250,y=200)
+        self.doj_var = StringVar()
+        doj_entry = tk.Entry(add_employee_window, textvariable=self.doj_var, font=self.times_new_roman)
+        doj_entry.place(x=400,y=200)
+
+        tk.Label(add_employee_window,  font=self.times_new_roman, compound=tk.LEFT, image=self.designation_label_img, bd=0).place(x=250,y=250)
+        self.designation_var = StringVar()
+        designation_entry = tk.Entry(add_employee_window, textvariable=self.designation_var, font=self.times_new_roman)
+        designation_entry.place(x=400,y=250)
+
+        tk.Label(add_employee_window,font=self.times_new_roman, compound=tk.LEFT, image=self.phoneno_label_img, bd=0).place(x=250,y=300)
+        self.phone_var = StringVar()
+        phone_entry = tk.Entry(add_employee_window, textvariable=self.phone_var, font=self.times_new_roman)
+        phone_entry.place(x=400,y=300)
+
+        tk.Label(add_employee_window,font=self.times_new_roman, compound=tk.LEFT, image=self.gender_label_img, bd=0).place(x=250,y=350)
+        self.gender_var = StringVar()
+        gender_entry = tk.Entry(add_employee_window, textvariable=self.gender_var, font=self.times_new_roman)
+        gender_entry.place(x=400,y=350)
+
+        tk.Label(add_employee_window, font=self.times_new_roman, compound=tk.LEFT, image=self.salary_label_img, bd=0).place(x=250,y=400)
+        self.salary_var = StringVar()
+        salary_entry = tk.Entry(add_employee_window, textvariable=self.salary_var, font=self.times_new_roman)
+        salary_entry.place(x=400,y=400)
+
+        tk.Label(add_employee_window,font=self.times_new_roman, compound=tk.LEFT, image=self.email_label_img, bd=0).place(x=250,y=450)
+        self.email_var = StringVar()
+        email_entry = tk.Entry(add_employee_window, textvariable=self.email_var, font=self.times_new_roman)
+        email_entry.place(x=400,y=450)
+
+        add_button = tk.Button(add_employee_window, font=self.times_new_roman,
+                              command=lambda: self.add_employee_to_database(add_employee_window),image=self.addemp_button_img,
+                               bd=0, compound=tk.LEFT, bg='black')
+        add_button.place(x=400,y=500)
+
+    def update_employee_window(self):
+        employee_name = self.get_employee_name_from_user()
+        if not employee_name:
+            return
+
+        details = self.fetch_employee_details(employee_name)
+
+        if not details:
+            messagebox.showerror("Error", "Employee not found.")
+            return
+
+        update_employee_window = tk.Toplevel(self.frontpage)
+        update_employee_window.title("Update Employee")
+        update_employee_window.geometry("800x600")
+        image_path_update_employee = r"C:\Users\harit\AppData\Local\Temp\Rar$DIa0.925\update employee.png"
+        update_employee_image = tk.PhotoImage(file=image_path_update_employee)
+
+        image_label = tk.Label(update_employee_window, image=update_employee_image)
+        image_label.image = update_employee_image
+        image_label.pack()
+
+        tk.Label(update_employee_window, text="Update Employee", font=self.times_new_roman).pack()
+
+        tk.Label(update_employee_window, font=self.times_new_roman, compound=tk.LEFT, image=self.name_label_img, bd=0).place(x=250, y=150)
+        self.name_var.set(details[0])  
+        name_entry = tk.Entry(update_employee_window, textvariable=self.name_var, font=self.times_new_roman, state='readonly')
+        name_entry.place(x=400, y=150)
+
+        tk.Label(update_employee_window, font=self.times_new_roman, compound=tk.LEFT, image=self.DOJ_label_img, bd=0).place(x=250, y=200)
+        self.doj_var.set(details[1]) 
+        doj_entry = tk.Entry(update_employee_window, textvariable=self.doj_var, font=self.times_new_roman)
+        doj_entry.place(x=400, y=200)
+
+        tk.Label(update_employee_window, font=self.times_new_roman, compound=tk.LEFT, image=self.designation_label_img, bd=0).place(x=250, y=250)
+        self.designation_var.set(details[2]) 
+        designation_entry = tk.Entry(update_employee_window, textvariable=self.designation_var, font=self.times_new_roman)
+        designation_entry.place(x=400, y=250)
+
+        tk.Label(update_employee_window, font=self.times_new_roman, compound=tk.LEFT, image=self.phoneno_label_img, bd=0).place(x=250, y=300)
+        self.phone_var.set(details[3])  
+        phone_entry = tk.Entry(update_employee_window, textvariable=self.phone_var, font=self.times_new_roman)
+        phone_entry.place(x=400, y=300)
+
+        tk.Label(update_employee_window, font=self.times_new_roman, compound=tk.LEFT, image=self.gender_label_img, bd=0).place(x=250, y=350)
+        self.gender_var.set(details[4])  
+        gender_entry = tk.Entry(update_employee_window, textvariable=self.gender_var, font=self.times_new_roman)
+        gender_entry.place(x=400, y=350)
+
+        tk.Label(update_employee_window, font=self.times_new_roman, compound=tk.LEFT, image=self.salary_label_img, bd=0).place(x=250, y=400)
+        self.salary_var.set(details[5])  
+        salary_entry = tk.Entry(update_employee_window, textvariable=self.salary_var, font=self.times_new_roman)
+        salary_entry.place(x=400, y=400)
+
+        tk.Label(update_employee_window, font=self.times_new_roman, compound=tk.LEFT, image=self.email_label_img, bd=0).place(x=250, y=450)
+        self.email_var.set(details[6])  
+        email_entry = tk.Entry(update_employee_window, textvariable=self.email_var, font=self.times_new_roman)
+        email_entry.place(x=400, y=450)
+
+        update_button = tk.Button(update_employee_window, font=self.times_new_roman,
+                                  command=self.update_employee, image=self.updatemp_button_img,
+                                  bd=0, compound=tk.LEFT, bg='black')
+        update_button.place(x=400, y=500)
+
+        
+    def delete_employee_window(self):
+        input_dialog = tk.Toplevel(self.frontpage)
+        input_dialog.title("Delete Employee")
+        input_dialog.geometry("800x600")
+        image_path_delete_employee = r"C:\Users\harit\AppData\Local\Temp\Rar$DIa0.126\delete employee.png"
+        delete_employee_image = tk.PhotoImage(file=image_path_delete_employee)
+
+        image_label = tk.Label(input_dialog, image=delete_employee_image)
+        image_label.image = delete_employee_image
+        image_label.pack()
+
+        label = tk.Label(input_dialog, font=self.times_new_roman,compound=tk.LEFT, image=self.enter_employee_name_img, bd=0)
+        label.place(x=270, y=230)
+
+        entry_var = StringVar()
+        entry = tk.Entry(input_dialog, textvariable=entry_var, font=self.times_new_roman)
+        entry.place(x=300, y=300)
+       
+        ok_button = tk.Button(input_dialog, font=self.times_new_roman, command=lambda: self.delete_employee(entry_var.get()), image=self.delemp_button_img,
+                                  bd=0, compound=tk.LEFT, bg='black')
+        ok_button.place(x=350, y=350)
+       
+
+        input_dialog.grab_set()
+        self.frontpage.wait_window(input_dialog)
+        
+
+    def add_employee_to_database(self, add_employee_window):
+     
+        name = self.name_var.get()
+        doj = self.doj_var.get()
+        designation = self.designation_var.get()
+        phone = self.phone_var.get()
+        gender = self.gender_var.get()
+        salary = self.salary_var.get()
+        email = self.email_var.get()
+
+        if not name:
+            messagebox.showerror("Error", "Name field cannot be empty.")
+            return
+
+        try:
+            cursor = self.con.cursor()
+            cursor.execute("INSERT INTO employee (Name, DOJ, Designation, PhoneNumber, Gender, Salary, Email) VALUES (%s, %s, %s, %s, %s, %s, %s)",
+                       (name, doj, designation, phone, gender, salary, email))
+            self.con.commit()
+            messagebox.showinfo("Success", "Employee added successfully.")
+            add_employee_window.destroy()
+        except mc.Error as e:
+            messagebox.showerror("Error", "Error adding employee")
+
+ 
+    def delete_employee(self, employee_name):
+        if self.con is None:
+            print("Database connection is not established.")
+            return
+
+        if not employee_name:
+            messagebox.showerror("Error", "Please enter the Name of the employee to delete.")
+            return
+
+        try:
+            cursor = self.con.cursor()
+            cursor.execute("DELETE FROM employee WHERE Name = %s", (employee_name,))
+            self.con.commit()
+            messagebox.showinfo("Success", "Employee deleted successfully.")
+        except mc.Error as e:
+            messagebox.showerror("Error", "Error deleting employee")
+
+       
+    def connect_to_database(self):
+        try:
+            self.con = mc.connect(host="localhost", user="root", password="26052011", database="employeedetails")
+            if self.con.is_connected():
+                print("Database Connected successfully")
+        except mc.Error as e:
+            print("Error connecting to the database")
+
+
+    def update_employee(self):
+        if self.con is not None:
+            updated_details = [self.name_var.get(), self.doj_var.get(), self.designation_var.get(),
+                               self.phone_var.get(), self.gender_var.get(), self.salary_var.get(), self.email_var.get()]
+
+        if any(not detail or detail.isspace() for detail in updated_details):
+            messagebox.showerror("Error", "All fields must be filled out.")
+            return
+
+        try:
+            cursor = self.con.cursor()
+            query = "UPDATE employee SET DOJ = %s, Designation = %s, PhoneNumber = %s, Gender = %s, Salary = %s, Email = %s WHERE Name = %s"
+            cursor.execute(query, (updated_details[1], updated_details[2], updated_details[3], updated_details[4],
+                                   updated_details[5], updated_details[6], updated_details[0]))
+            self.con.commit()
+
+            updated_employee_details = self.fetch_employee_details(updated_details[0])
+
+            if updated_employee_details:
+                self.display_employee_details(updated_employee_details)
+                messagebox.showinfo("Success", "Employee updated successfully.")
+            else:
+                messagebox.showerror("Error", "Employee not found.")
+        except mc.Error as e:
+            messagebox.showerror("Error", "Error updating employee")
+
+
+app = EmployeeManagementApp() 
+app.connect_to_database()
+app.login_screen.mainloop()
